@@ -13,6 +13,8 @@ class _LogoAppState extends State<LogoApp> with SingleTickerProviderStateMixin {
   Animation<double> animation;
   AnimationController controller;
   Animation<Color> colorAnimation;
+  Animation<double> curveAnimation;
+  Animation<int> alpha;
 
   initState() {
     super.initState();
@@ -22,6 +24,7 @@ class _LogoAppState extends State<LogoApp> with SingleTickerProviderStateMixin {
       ..addListener(() {
         setState(() {
           //print('hohoho ${animation.value}');
+          print('alpha.value = ${alpha.value}');
           print(controller.value);
           // the state that has changed here is the animation object’s value
         });
@@ -29,56 +32,64 @@ class _LogoAppState extends State<LogoApp> with SingleTickerProviderStateMixin {
     colorAnimation = new ColorTween(begin: Colors.lightBlue, end: Colors.red)
         .animate(controller);
     //controller.forward();
+
+    curveAnimation =
+        new CurvedAnimation(parent: controller, curve: Curves.easeOut);
+    alpha = new IntTween(begin: 10, end: 100).animate(curveAnimation);
   }
 
   Widget build(BuildContext context) {
     return new Center(
-      child: new Column(
-        children: <Widget>[
-          new Row(
-            children: <Widget>[
-              new IconButton(
-                icon: new Icon(Icons.fast_forward),
-                tooltip: 'Increase volume by 10%',
-                onPressed: () {
-                  setState(() {
-                    controller.reset();
-                    controller.forward();
-                  });
-                },
-              ),
-              new IconButton(
-                icon: new Icon(Icons.fast_rewind),
-                tooltip: 'Increase volume by 10%',
-                onPressed: () {
-                  setState(() {
-                    controller.reverse(from: 1.0);
-                  });
-                },
-              ),
-              new IconButton(
-                icon: new Icon(Icons.stop),
-                tooltip: 'Increase volume by 10%',
-                onPressed: () {
-                  setState(() {
-                    //controller.value = 0.5;
-                    controller.stop(canceled: false);
-                  });
-                },
-              ),
-            ],
-          ),
-          new Text(
-            'testest',
-            style: new TextStyle(color: colorAnimation.value, fontSize: 50.0),
-          ),
-          new Container(
-            margin: new EdgeInsets.symmetric(vertical: 10.0),
-            height: animation.value,
-            width: animation.value,
-            child: new FlutterLogo(),
-          ),
-        ],
+      child: new Padding(
+        padding: const EdgeInsets.only(top: 20.0),
+        child: new Column(
+          children: <Widget>[
+            new Row(
+              children: <Widget>[
+                new IconButton(
+                  icon: new Icon(Icons.fast_forward),
+                  tooltip: 'Increase volume by 10%',
+                  onPressed: () {
+                    setState(() {
+                      controller.reset();
+                      controller.forward();
+                    });
+                  },
+                ),
+                new IconButton(
+                  icon: new Icon(Icons.fast_rewind),
+                  tooltip: 'Increase volume by 10%',
+                  onPressed: () {
+                    setState(() {
+                      controller.reverse(from: 1.0);
+                    });
+                  },
+                ),
+                new IconButton(
+                  icon: new Icon(Icons.stop),
+                  tooltip: 'Increase volume by 10%',
+                  onPressed: () {
+                    setState(() {
+                      //controller.value = 0.5;
+                      controller.stop(canceled: false);
+                    });
+                  },
+                ),
+              ],
+            ),
+            new Text(
+              'testest',
+              style: new TextStyle(
+                  color: colorAnimation.value, fontSize: alpha.value * 1.0),
+            ),
+            new Container(
+              margin: new EdgeInsets.symmetric(vertical: 10.0),
+              height: animation.value,
+              width: animation.value,
+              child: new FlutterLogo(),
+            ),
+          ],
+        ),
       ),
     );
   }
