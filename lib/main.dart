@@ -5,18 +5,39 @@
 import 'package:flutter/animation.dart';
 import 'package:flutter/material.dart';
 
-class AnimatedLogo extends AnimatedWidget {
-  AnimatedLogo({Key key, Animation<double> animation})
-      : super(key: key, listenable: animation);
-
+class Logo extends StatelessWidget {
+  @override
   Widget build(BuildContext context) {
-    final Animation<double> animation = listenable;
-    return new Container(
-      margin: new EdgeInsets.symmetric(vertical: 10.0),
-      height: animation.value,
-      width: animation.value,
-      child: new FlutterLogo(),
-    );
+    return new FlutterLogo();
+  }
+}
+
+class SizeGrowTransition extends StatelessWidget {
+  SizeGrowTransition({this.child, this.animation});
+
+  final Widget child;
+  final Animation<double> animation;
+
+  @override
+  Widget build(BuildContext context) {
+    return new AnimatedBuilder(
+        animation: animation,
+        child: child,
+        builder: (BuildContext context, Widget animatedChild) {
+          return new Container(
+              height: animation.value,
+              width: animation.value,
+              child: animatedChild);
+        });
+  }
+}
+
+class TextTransition extends StatelessWidget {
+  final Text child;
+
+  @override
+  Widget build(BuildContext context) {
+    return new Container();
   }
 }
 
@@ -46,7 +67,11 @@ class _LogoAppState extends State<LogoApp> with SingleTickerProviderStateMixin {
 //        });
       })
       ..addStatusListener((AnimationStatus status) {
-        print('status = $status');
+        if (status == AnimationStatus.completed) {
+          controller.reverse();
+        } else if (status == AnimationStatus.dismissed) {
+          controller.forward();
+        }
       });
     colorAnimation = new ColorTween(begin: Colors.lightBlue, end: Colors.red)
         .animate(controller);
@@ -105,11 +130,13 @@ class _LogoAppState extends State<LogoApp> with SingleTickerProviderStateMixin {
               style: new TextStyle(
                   color: colorAnimation.value, fontSize: alpha.value * 1.0),
             ),
-            AnimatedLogo(
+            SizeGrowTransition(
               animation: animation,
+              child: Logo(),
             ),
-            AnimatedLogo(
+            SizeGrowTransition(
               animation: easeOutAnimation,
+              child: Logo(),
             ),
           ],
         ),
