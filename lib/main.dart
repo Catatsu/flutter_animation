@@ -29,6 +29,9 @@ class _LogoAppState extends State<LogoApp> with SingleTickerProviderStateMixin {
           print(controller.value);
           // the state that has changed here is the animation object’s value
         });
+      })
+      ..addStatusListener((AnimationStatus status) {
+        print('status = $status');
       });
     colorAnimation = new ColorTween(begin: Colors.lightBlue, end: Colors.red)
         .animate(controller);
