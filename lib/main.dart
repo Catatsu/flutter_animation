@@ -5,6 +5,21 @@
 import 'package:flutter/animation.dart';
 import 'package:flutter/material.dart';
 
+class AnimatedLogo extends AnimatedWidget {
+  AnimatedLogo({Key key, Animation<double> animation})
+      : super(key: key, listenable: animation);
+
+  Widget build(BuildContext context) {
+    final Animation<double> animation = listenable;
+    return new Container(
+      margin: new EdgeInsets.symmetric(vertical: 10.0),
+      height: animation.value,
+      width: animation.value,
+      child: new FlutterLogo(),
+    );
+  }
+}
+
 class LogoApp extends StatefulWidget {
   _LogoAppState createState() => new _LogoAppState();
 }
@@ -23,12 +38,12 @@ class _LogoAppState extends State<LogoApp> with SingleTickerProviderStateMixin {
         duration: const Duration(milliseconds: 2000), vsync: this);
     animation = new Tween(begin: 0.0, end: 300.0).animate(controller)
       ..addListener(() {
-        setState(() {
-          //print('hohoho ${animation.value}');
-          print('alpha.value = ${alpha.value}');
-          print(controller.value);
-          // the state that has changed here is the animation object’s value
-        });
+//        setState(() {
+        //print('hohoho ${animation.value}');
+        print('alpha.value = ${alpha.value}');
+        print(controller.value);
+        // the state that has changed here is the animation object’s value
+//        });
       })
       ..addStatusListener((AnimationStatus status) {
         print('status = $status');
@@ -90,17 +105,11 @@ class _LogoAppState extends State<LogoApp> with SingleTickerProviderStateMixin {
               style: new TextStyle(
                   color: colorAnimation.value, fontSize: alpha.value * 1.0),
             ),
-            new Container(
-              margin: new EdgeInsets.symmetric(vertical: 10.0),
-              height: animation.value,
-              width: animation.value,
-              child: new FlutterLogo(),
+            AnimatedLogo(
+              animation: animation,
             ),
-            new Container(
-              margin: new EdgeInsets.symmetric(vertical: 10.0),
-              height: easeOutAnimation.value,
-              width: easeOutAnimation.value,
-              child: new FlutterLogo(),
+            AnimatedLogo(
+              animation: easeOutAnimation,
             ),
           ],
         ),
