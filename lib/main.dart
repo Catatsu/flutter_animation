@@ -34,10 +34,28 @@ class SizeGrowTransition extends StatelessWidget {
 
 class TextTransition extends StatelessWidget {
   final Text child;
+  final Animation<Color> colorAnimation;
+  final Animation<double> sizeAnimation;
+
+  TextTransition({this.child, this.colorAnimation, this.sizeAnimation});
 
   @override
   Widget build(BuildContext context) {
-    return new Container();
+    return new AnimatedBuilder(
+        animation: colorAnimation,
+        child: child,
+        builder: (BuildContext context, Widget animatedChild) {
+          return new AnimatedBuilder(
+              animation: sizeAnimation,
+              child: animatedChild,
+              builder: (BuildContext context, Widget animatedChild2) {
+                return new Text(child.data,
+                    style: child.style.copyWith(
+                      color: colorAnimation.value,
+                      fontSize: sizeAnimation.value,
+                    ));
+              });
+        });
   }
 }
 
@@ -50,7 +68,7 @@ class _LogoAppState extends State<LogoApp> with SingleTickerProviderStateMixin {
   AnimationController controller;
   Animation<Color> colorAnimation;
   Animation<double> curveAnimation;
-  Animation<int> alpha;
+  Animation<double> alpha;
   Animation<double> easeOutAnimation;
 
   initState() {
@@ -79,7 +97,7 @@ class _LogoAppState extends State<LogoApp> with SingleTickerProviderStateMixin {
 
     curveAnimation =
         new CurvedAnimation(parent: controller, curve: Curves.easeOut);
-    alpha = new IntTween(begin: 10, end: 100).animate(curveAnimation);
+    alpha = new Tween(begin: 10.0, end: 100.0).animate(curveAnimation);
 
     easeOutAnimation = new Tween(begin: 0.0, end: 300.0).animate(
       new CurvedAnimation(parent: controller, curve: Curves.easeOut),
@@ -125,10 +143,13 @@ class _LogoAppState extends State<LogoApp> with SingleTickerProviderStateMixin {
                 ),
               ],
             ),
-            new Text(
-              'testest',
-              style: new TextStyle(
-                  color: colorAnimation.value, fontSize: alpha.value * 1.0),
+            new TextTransition(
+              child: new Text(
+                'testest',
+                style: new TextStyle(fontWeight: FontWeight.bold),
+              ),
+              colorAnimation: colorAnimation,
+              sizeAnimation: alpha,
             ),
             SizeGrowTransition(
               animation: animation,
