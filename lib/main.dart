@@ -32,6 +32,29 @@ class SizeGrowTransition extends StatelessWidget {
   }
 }
 
+// １つの線形をつかって２つのアニメーションをさせる場合
+class AnimatedText extends AnimatedWidget {
+  ColorTween _colorTween =
+      new ColorTween(begin: Colors.lightBlue, end: Colors.red);
+  Tween _sizeTween = new Tween(begin: 10.0, end: 100.0);
+
+  final Text child;
+
+  AnimatedText(this.child, Animation<double> animation)
+      : super(listenable: animation);
+
+  @override
+  Widget build(BuildContext context) {
+    final Animation<double> animation = listenable;
+    return new Text(child.data,
+        style: child.style.copyWith(
+          fontSize: _sizeTween.evaluate(animation),
+          color: _colorTween.evaluate(animation),
+        ));
+  }
+}
+
+// 異なる線形２つを使って、それぞれ１つずつ、合計２つのアニメーションをさせる場合
 class TextTransition extends StatelessWidget {
   final Text child;
   final Animation<Color> colorAnimation;
@@ -145,11 +168,18 @@ class _LogoAppState extends State<LogoApp> with SingleTickerProviderStateMixin {
             ),
             new TextTransition(
               child: new Text(
-                'testest',
+                'test1',
                 style: new TextStyle(fontWeight: FontWeight.bold),
               ),
               colorAnimation: colorAnimation,
               sizeAnimation: alpha,
+            ),
+            new AnimatedText(
+              new Text(
+                'test2',
+                style: new TextStyle(fontWeight: FontWeight.bold),
+              ),
+              curveAnimation,
             ),
             SizeGrowTransition(
               animation: animation,
