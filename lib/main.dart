@@ -12,6 +12,7 @@ class LogoApp extends StatefulWidget {
 class _LogoAppState extends State<LogoApp> with SingleTickerProviderStateMixin {
   Animation<double> animation;
   AnimationController controller;
+  Animation<Color> colorAnimation;
 
   initState() {
     super.initState();
@@ -20,10 +21,13 @@ class _LogoAppState extends State<LogoApp> with SingleTickerProviderStateMixin {
     animation = new Tween(begin: 0.0, end: 300.0).animate(controller)
       ..addListener(() {
         setState(() {
-          print('hohoho ${animation.value}');
+          //print('hohoho ${animation.value}');
+          print(controller.value);
           // the state that has changed here is the animation object’s value
         });
       });
+    colorAnimation = new ColorTween(begin: Colors.lightBlue, end: Colors.red)
+        .animate(controller);
     //controller.forward();
   }
 
@@ -34,7 +38,7 @@ class _LogoAppState extends State<LogoApp> with SingleTickerProviderStateMixin {
           new Row(
             children: <Widget>[
               new IconButton(
-                icon: new Icon(Icons.volume_up),
+                icon: new Icon(Icons.fast_forward),
                 tooltip: 'Increase volume by 10%',
                 onPressed: () {
                   setState(() {
@@ -44,15 +48,29 @@ class _LogoAppState extends State<LogoApp> with SingleTickerProviderStateMixin {
                 },
               ),
               new IconButton(
-                icon: new Icon(Icons.volume_down),
+                icon: new Icon(Icons.fast_rewind),
                 tooltip: 'Increase volume by 10%',
                 onPressed: () {
                   setState(() {
-                    controller.reset();
+                    controller.reverse(from: 1.0);
+                  });
+                },
+              ),
+              new IconButton(
+                icon: new Icon(Icons.stop),
+                tooltip: 'Increase volume by 10%',
+                onPressed: () {
+                  setState(() {
+                    //controller.value = 0.5;
+                    controller.stop(canceled: false);
                   });
                 },
               ),
             ],
+          ),
+          new Text(
+            'testest',
+            style: new TextStyle(color: colorAnimation.value, fontSize: 50.0),
           ),
           new Container(
             margin: new EdgeInsets.symmetric(vertical: 10.0),
