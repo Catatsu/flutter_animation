@@ -24,16 +24,43 @@ class _LogoAppState extends State<LogoApp> with SingleTickerProviderStateMixin {
           // the state that has changed here is the animation object’s value
         });
       });
-    controller.forward();
+    //controller.forward();
   }
 
   Widget build(BuildContext context) {
     return new Center(
-      child: new Container(
-        margin: new EdgeInsets.symmetric(vertical: 10.0),
-        height: animation.value,
-        width: animation.value,
-        child: new FlutterLogo(),
+      child: new Column(
+        children: <Widget>[
+          new Row(
+            children: <Widget>[
+              new IconButton(
+                icon: new Icon(Icons.volume_up),
+                tooltip: 'Increase volume by 10%',
+                onPressed: () {
+                  setState(() {
+                    controller.reset();
+                    controller.forward();
+                  });
+                },
+              ),
+              new IconButton(
+                icon: new Icon(Icons.volume_down),
+                tooltip: 'Increase volume by 10%',
+                onPressed: () {
+                  setState(() {
+                    controller.reset();
+                  });
+                },
+              ),
+            ],
+          ),
+          new Container(
+            margin: new EdgeInsets.symmetric(vertical: 10.0),
+            height: animation.value,
+            width: animation.value,
+            child: new FlutterLogo(),
+          ),
+        ],
       ),
     );
   }
@@ -45,5 +72,9 @@ class _LogoAppState extends State<LogoApp> with SingleTickerProviderStateMixin {
 }
 
 void main() {
-  runApp(new LogoApp());
+  runApp(new MaterialApp(
+    home: new Scaffold(
+      body: new LogoApp(),
+    ),
+  ));
 }
