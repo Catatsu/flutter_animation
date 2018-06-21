@@ -15,6 +15,7 @@ class _LogoAppState extends State<LogoApp> with SingleTickerProviderStateMixin {
   Animation<Color> colorAnimation;
   Animation<double> curveAnimation;
   Animation<int> alpha;
+  Animation<double> easeOutAnimation;
 
   initState() {
     super.initState();
@@ -36,6 +37,10 @@ class _LogoAppState extends State<LogoApp> with SingleTickerProviderStateMixin {
     curveAnimation =
         new CurvedAnimation(parent: controller, curve: Curves.easeOut);
     alpha = new IntTween(begin: 10, end: 100).animate(curveAnimation);
+
+    easeOutAnimation = new Tween(begin: 0.0, end: 300.0).animate(
+      new CurvedAnimation(parent: controller, curve: Curves.easeOut),
+    );
   }
 
   Widget build(BuildContext context) {
@@ -86,6 +91,12 @@ class _LogoAppState extends State<LogoApp> with SingleTickerProviderStateMixin {
               margin: new EdgeInsets.symmetric(vertical: 10.0),
               height: animation.value,
               width: animation.value,
+              child: new FlutterLogo(),
+            ),
+            new Container(
+              margin: new EdgeInsets.symmetric(vertical: 10.0),
+              height: easeOutAnimation.value,
+              width: easeOutAnimation.value,
               child: new FlutterLogo(),
             ),
           ],
